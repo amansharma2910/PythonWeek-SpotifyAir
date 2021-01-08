@@ -202,3 +202,25 @@ def get_default_device():
         return torch.device('cuda') # sets the default device as the available CUDA device
     else:
         return torch.device('cpu')  # if no CUDA device found, sets CPU as the default device
+
+def to_device(data, device):
+    """Move tensor(s) to chosen device
+    """
+    if isinstance(data, (list,tuple)): # asserts if the data is a list/tuple 
+        return [to_device(x, device) for x in data]
+    return data.to(device, non_blocking=True)
+
+class DeviceDataLoader():
+    """Wrap a dataloader to move data to the default device.
+    """
+    def __init__(self, dataloader, device):
+        self.dl = dataloader
+        self.device = device
+        
+    def __iter__(self):
+        for batch in self.dl: 
+            image, label = batch['image'], batch['label']
+            yield to_device([image.float(), label], self.device)
+
+    def __len__(self):
+        return len(self.dl)
