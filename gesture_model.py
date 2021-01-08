@@ -224,3 +224,78 @@ class DeviceDataLoader():
 
     def __len__(self):
         return len(self.dl)
+
+# setting default device
+device = get_default_device()
+
+# creating device dataloaders
+train_ddl = DeviceDataLoader(train_loader, device)
+test_ddl = DeviceDataLoader(test_loader, device)
+
+# moving model to device
+model = GestureModel()
+model.to(device, non_blocking=True)
+
+
+
+
+
+# validation epoch
+@torch.no_grad()
+def evaluate(model, validation_ddl):
+    """Calculates validation loss and validation accuracy over an epoch of validation/test data"""
+    model.eval()    # sets the model to evaluation mode
+    output = torch.zeros(2)
+    total_batches = 0
+    for batch in validation_ddl:
+        total_batches += 1
+        output += model.validation_step(batch)
+    output = output / total_batches
+    return output
+
+def get_lr(optimizer):
+    """Gets the learning rate of the optimizer.
+    """
+    for param_group in optimizer.param_groups:
+        return param_group['lr']
+
+
+def fit_one_cycle(epochs, max_lr, model, train_dataloader, val_dataloader, 
+                  weight_decay = 0, grad_clip = None, opt_func = torch.optim.Adam):
+    
+    torch.cuda.empty_cache()    # clears cache in CUDA device
+    history = []    # declares an empty list to store result for each epoch
+    
+    # sets up optimizer with weight decay
+    optimizer = opt_func(model.parameters(), max_lr, weight_decay = weight_decay)
+    
+    # sets up one-cycle learning rate scheduler
+    scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr, epochs = epochs, steps_per_epoch = len(train_dataloader))
+    
+    for epoch in range(epochs): 
+        model.train()    # initiate training phase
+        train_losses = []
+        lrs = 0
+        for batch in train_dataloader:    # cycles through each batch of the training data
+            loss = model.training_step(batch)    
+            train_losses.append(loss)
+            loss.backward()
+            
+            # perfomrs gradient clipping
+            if grad_clip: 
+                nn.utils.clip_grad_value_(model.parameters(), grad_clip)
+            
+            optimizer.step() # updates parameters based on gradients
+            optimizer.zero_grad() # resets gradient values
+            
+            # records & updates learning rate
+            lrs = get_lr(optimizer)
+            scheduler.step()
+        
+        # initaites validation phase
+        result = evaluate(model, val_dataloader).tolist()
+        result.append(torch.stack(train_losses).mean().item())
+        result.append(lrs)
+        model.epoch_end(epoch, result)
+        history.append(result)
+    return history
