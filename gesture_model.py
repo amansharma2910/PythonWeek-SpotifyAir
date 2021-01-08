@@ -80,3 +80,17 @@ train_dataset = GestureDataset(train_x, train_y, transform)
 
 # validation dataset
 test_dataset = GestureDataset(test_x, test_y, transform)
+
+
+# dataloaders (to input data to the model)
+
+train_loader = DataLoader(train_dataset, 
+                            batch_size=64,
+                            shuffle=True,
+                            num_workers=0, # DO NOT CHANGE NUM WORKERS (Windows specific PyTorch bug)
+                            )
+test_loader = DataLoader(test_dataset, 
+                            batch_size=128,
+                            shuffle=False,
+                            num_workers=0, # DO NOT CHANGE NUM WORKERS
+                            )
