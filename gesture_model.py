@@ -44,3 +44,39 @@ def preprocess_dataset(csv_path, selected_gestures):
     return images, labels
 
 
+selected_gestures = [0, 1, 21, 22] # indexes for selected gestures
+train_path = 'sign_mnist_train/sign_mnist_train.csv'
+test_path = 'sign_mnist_test/sign_mnist_test.csv'
+
+train_x, train_y = preprocess_dataset(train_path, selected_gestures)
+test_x, test_y = preprocess_dataset(test_path, selected_gestures)
+
+
+# creating dataset
+
+class GestureDataset(Dataset):
+    def __init__(self, images, labels, transforms):
+        self.images = images
+        self.labels = labels
+        self.transforms = transforms
+
+    def __len__(self):
+        return len(self.images)
+
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+        if self.transforms:
+            image = self.transforms(self.images[idx])
+        else:
+            image = self.images[idx]
+        label = self.labels[idx]
+        return {'image': image, 'label': label}
+
+
+# training dataset
+transform =  transforms.ToTensor()
+train_dataset = GestureDataset(train_x, train_y, transform)
+
+# validation dataset
+test_dataset = GestureDataset(test_x, test_y, transform)
