@@ -188,3 +188,17 @@ class GestureModel(nn.Module):
     def epoch_end(self, epoch, result):
         print("Epoch: {} || LR: {:.5f} || Training Loss: {:.5f} || Validation Loss: {:.5f} || Validation Accuracy: {:.5f}"
                 .format(epoch, result[3], result[2], result[0], result[1]))
+
+
+
+
+
+
+
+def get_default_device():
+    """Picks the trainig device-- GPU if available, else CPU.
+    """
+    if torch.cuda.is_available():   # checks if a cuda device is available
+        return torch.device('cuda') # sets the default device as the available CUDA device
+    else:
+        return torch.device('cpu')  # if no CUDA device found, sets CPU as the default device
