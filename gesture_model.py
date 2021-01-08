@@ -175,3 +175,16 @@ class GestureModel(nn.Module):
         output = self(images)
         batch_loss = nn.CrossEntropyLoss()(output, labels)
         return batch_loss
+
+    def validation_step(self, batch):
+        """Single validation step on a batch of data."""
+        images = batch[0]
+        labels = batch[1]
+        output = self(images)
+        batch_loss = nn.CrossEntropyLoss()(output, labels)
+        batch_acc = self.accuracy(output, labels)
+        return torch.Tensor([batch_loss, batch_acc])
+
+    def epoch_end(self, epoch, result):
+        print("Epoch: {} || LR: {:.5f} || Training Loss: {:.5f} || Validation Loss: {:.5f} || Validation Accuracy: {:.5f}"
+                .format(epoch, result[3], result[2], result[0], result[1]))
