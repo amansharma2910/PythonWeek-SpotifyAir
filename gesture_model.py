@@ -299,3 +299,13 @@ def fit_one_cycle(epochs, max_lr, model, train_dataloader, val_dataloader,
         model.epoch_end(epoch, result)
         history.append(result)
     return history
+
+
+# training the model
+history = fit_one_cycle(epochs=10, max_lr=0.001, model=model, 
+              train_dataloader=train_ddl, val_dataloader=test_ddl, 
+              weight_decay=0.01, grad_clip=0.001,
+              opt_func=torch.optim.Adam)
+
+# saving the trained model
+torch.save(model.state_dict(), 'hand_gesture_model.pth')
