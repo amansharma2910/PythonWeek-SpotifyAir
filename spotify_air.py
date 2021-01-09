@@ -3,6 +3,9 @@ import torch.nn as nn
 import numpy
 import cv2 as cv
 
+# setting device as cpu to make it less computationally intensive
+device = torch.device("cpu")
+
 # model class
 class GestureModel(nn.Module):
     """Neural net for recognizing hand gestures
@@ -53,8 +56,10 @@ class GestureModel(nn.Module):
         output = self.classifier(x)
         return output
 
-model = torch.load("hand_gesture_model.pth")
-print(model)
+model = GestureModel()
+model.load_state_dict(torch.load("hand_gesture_model.pth"))
+model.to(device)
+
 # def frameResize(frame, scale = 0.75):
 #     height = int(frame.shape[0] * scale)
 #     width = int(frame.shape[1] * scale)
@@ -63,8 +68,10 @@ print(model)
 #     resizedFrame = cv.resize(frame, dimensions, interpolation= cv.INTER_AREA)
 #     return resizedFrame
 
-# video = cv.VideoCapture(0)
-# while True:
-#     isTrue, frame = video.read()
-#     print(type(frame))
-#     break
+video = cv.VideoCapture(0)
+n = 10
+while n > 0:
+    isTrue, frame = video.read()
+    print(frame.shape)
+    n -= 1
+    
