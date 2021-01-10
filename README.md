@@ -15,3 +15,5 @@ SpotifyAir, the solution uses Computer Vision to address this problem. Just leav
 * OpenCV: For reading the video feed from the device's webcam.
 * Selenium: For automating browser
 * VS Code (w/ Python Extension): For coding!
+
+NOTE: Install project requirements using the requirements.txt file provided.
