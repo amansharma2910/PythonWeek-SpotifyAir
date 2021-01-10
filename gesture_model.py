@@ -145,7 +145,7 @@ class GestureModel(nn.Module):
             nn.Flatten(), # m x 128*2*2
             nn.Dropout(p=0.2),
             nn.Linear(128*2*2, 4),
-            nn.Softmax(),
+            nn.Softmax(dim=1),
         ) # m x 4
 
     def forward(self, input):

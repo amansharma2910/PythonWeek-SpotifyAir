@@ -1,4 +1,5 @@
 import torch
+from torchvision.transforms import ToTensor, Grayscale, Resize, Compose
 import torch.nn as nn
 import numpy
 import cv2 as cv
@@ -45,7 +46,7 @@ class GestureModel(nn.Module):
             nn.Flatten(), # m x 128*2*2
             nn.Dropout(p=0.2),
             nn.Linear(128*2*2, 4),
-            nn.Softmax(),
+            nn.Softmax(dim=1),
         ) # m x 4
 
     def forward(self, input):
@@ -59,19 +60,21 @@ class GestureModel(nn.Module):
 model = GestureModel()
 model.load_state_dict(torch.load("hand_gesture_model.pth"))
 model.to(device)
+model.eval()
 
-# def frameResize(frame, scale = 0.75):
-#     height = int(frame.shape[0] * scale)
-#     width = int(frame.shape[1] * scale)
-#     dimensions = (width, height)
 
-#     resizedFrame = cv.resize(frame, dimensions, interpolation= cv.INTER_AREA)
-#     return resizedFrame
+# defining the set of transformations
+transform = Compose([
+    ToTensor(),
+    Grayscale(),
+    Resize([28, 28])
+])
+
 
 video = cv.VideoCapture(0)
-n = 10
-while n > 0:
+while True:
     isTrue, frame = video.read()
-    print(frame.shape)
-    n -= 1
+    frame = torch.unsqueeze(transform(frame), 0)
+    print(model(frame))
+    break
     
