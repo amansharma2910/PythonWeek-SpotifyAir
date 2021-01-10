@@ -1,4 +1,4 @@
-# PythonWeek-SpotifyAir
+# ThePythonWeek-SpotifyAir
 Hackathon submission for ThePythonWeek.
 
 ## Problem Statement
