@@ -3,6 +3,8 @@ from torchvision.transforms import ToTensor, Grayscale, Resize, Compose
 import torch.nn as nn
 import numpy
 import cv2 as cv
+import time
+import selenium
 
 # setting device as cpu to make it less computationally intensive
 device = torch.device("cpu")
@@ -57,10 +59,10 @@ class GestureModel(nn.Module):
         output = self.classifier(x)
         return output
 
-model = GestureModel()
-model.load_state_dict(torch.load("hand_gesture_model.pth"))
-model.to(device)
-model.eval()
+model = GestureModel() # initialising model object
+model.load_state_dict(torch.load("hand_gesture_model.pth")) # loading the pretrained weights
+model.to(device) # moving the model to CPU for less computation
+model.eval() # setting the model to evaluation mode
 
 
 # defining the set of transformations
@@ -70,7 +72,7 @@ transform = Compose([
     Resize([28, 28])
 ])
 
-
+# runnig cv to capture video frames and perform inference on it
 video = cv.VideoCapture(0)
 while True:
     isTrue, frame = video.read()
