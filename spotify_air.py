@@ -106,7 +106,7 @@ video = cv.VideoCapture(0)
 while True:
     isTrue, frame = video.read()
     frame = torch.unsqueeze(transform(frame), 0)
-    action = torch.argmax(model(frame)) # getting the action
+    action = torch.argmax(model(frame)).item() # getting the action
     if(action == 0):
         try:
             play = browser.find_elements_by_class_name("_82ba3fb528bb730b297a91f46acd37a3-scss")
