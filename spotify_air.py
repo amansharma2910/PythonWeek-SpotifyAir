@@ -4,7 +4,8 @@ import torch.nn as nn
 import numpy
 import cv2 as cv
 import time
-import selenium
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 # setting device as cpu to make it less computationally intensive
 device = torch.device("cpu")
@@ -58,6 +59,34 @@ class GestureModel(nn.Module):
         x = self.conv4(x)
         output = self.classifier(x)
         return output
+
+# creating webdriver
+browser = webdriver.Chrome()
+browser.get("https://open.spotify.com/")
+
+# creating a sleep timer to allow initializing the browser
+time.sleep(4)
+
+# finds login button
+login_button = browser.find_elements_by_class_name("_3f37264be67c8f40fa9f76449afdb4bd-scss _1f2f8feb807c94d2a0a7737b433e19a8-scss")
+#clicking the login button
+login_button[0].click()
+
+time.sleep(2)
+
+username = browser.find_elements_by_id("login-username") 
+username[0].send_keys('USER-NAME') # enter username here
+
+password = browser.find_elements_by_id("login-password")
+password[0].send_keys('PASSWORD') # enter hardcoded password here
+
+# finds login button
+login = browser.find_elements_by_id("login-button")
+#clicking the login button
+login[0].click()
+
+time.sleep(3)
+
 
 model = GestureModel() # initialising model object
 model.load_state_dict(torch.load("hand_gesture_model.pth")) # loading the pretrained weights
