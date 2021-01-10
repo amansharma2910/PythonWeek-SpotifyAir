@@ -16,4 +16,18 @@ SpotifyAir, the solution uses Computer Vision to address this problem. Just leav
 * Selenium: For automating browser
 * VS Code (w/ Python Extension): For coding!
 
-NOTE: Install project requirements using the requirements.txt file provided.
+## Steps to run locally:
+1. Clone the repository.
+
+`$ git clone https://github.com/amansharma2910/PythonWeek-SpotifyAir.git`
+
+2. Install project dependencies
+
+`$ conda create --name spotify-air --file environment.txt`
+
+3. Running the app:
+
+`$ conda activate spotify-air`
+
+`$ python spotify_air.py`
+
