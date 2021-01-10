@@ -106,6 +106,29 @@ video = cv.VideoCapture(0)
 while True:
     isTrue, frame = video.read()
     frame = torch.unsqueeze(transform(frame), 0)
-    print(model(frame))
-    break
+    action = torch.argmax(model(frame)) # getting the action
+    if(action == 0):
+        try:
+            play = browser.find_elements_by_class_name("_82ba3fb528bb730b297a91f46acd37a3-scss")
+            play[0].click()
+        except:
+            print("Play button not found")
+    elif(action == 1):
+        try:
+            pause = browser.find_elements_by_class_name("_82ba3fb528bb730b297a91f46acd37a3-scss")
+            pause[0].click()
+        except:
+            print("Pause button not found")
+    elif(action == 2):
+        try:
+            next_button = browser.find_elements_by_class_name("bf01b0d913b6bfffea0d4ffd7393c4af-scss")
+            next_button[0].click()
+        except:
+            print("Next button not found")
+    elif(action == 3):
+        try:
+            prev_button = browser.find_elements_by_class_name("bc13c597ccee51a09ec60253c3c51c75-scss")
+            prev_button[0].click()
+        except:
+            print("Previous button not found")
     
