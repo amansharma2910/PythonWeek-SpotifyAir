@@ -1,4 +1,4 @@
-# PythonWeek-SpotifyAir
+# ThePythonWeek-SpotifyAir
 Hackathon submission for ThePythonWeek.
 
 ## Problem Statement
@@ -15,3 +15,19 @@ SpotifyAir, the solution uses Computer Vision to address this problem. Just leav
 * OpenCV: For reading the video feed from the device's webcam.
 * Selenium: For automating browser
 * VS Code (w/ Python Extension): For coding!
+
+## Steps to run locally:
+1. Clone the repository.
+
+`$ git clone https://github.com/amansharma2910/PythonWeek-SpotifyAir.git`
+
+2. Install project dependencies
+
+`$ conda create --name spotify-air --file environment.txt`
+
+3. Running the app:
+
+`$ conda activate spotify-air`
+
+`$ python spotify_air.py`
+
